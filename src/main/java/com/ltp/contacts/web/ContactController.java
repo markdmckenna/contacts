@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.ltp.contacts.exception.NoContactException;
 import com.ltp.contacts.pojo.Contact;
 import com.ltp.contacts.service.ContactService;
 
@@ -35,7 +36,13 @@ public class ContactController {
     @GetMapping("/contact/{id}")
     public ResponseEntity<Contact> getContact(@PathVariable String id) {
         LOGGER.info("[IN]ContactController - getContact - id: {}", id);
-        Contact contact = contactService.getContactById(id);
+        Contact contact;
+        try {
+            contact = contactService.getContactById(id);
+        } catch (NoContactException e) {
+            LOGGER.error("[OUTContactController - getContact - NoContactException");
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);    
+        }
         if (null == contact)  return new ResponseEntity<>(contact, HttpStatus.NOT_FOUND);
         LOGGER.info("[OUT]ContactController - getContact - contact: {}", contact);
         return new ResponseEntity<>(contact, HttpStatus.OK);
@@ -52,7 +59,12 @@ public class ContactController {
     @PutMapping("/contact/{id}")
     public ResponseEntity<Contact> updateContact(@PathVariable String id, @RequestBody Contact contact) {
         LOGGER.info("[IN]ContactController - updateContact - id: {} - contact: {}", id, contact);
-        contactService.updateContact(id, contact);        
+        try {
+            contactService.updateContact(id, contact);
+        } catch (NoContactException e) {
+            LOGGER.error("[OUTContactController - updateContact - NoContactException");
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND); 
+        }        
         LOGGER.info("[OUT]ContactController - updateContact - contact: {}", contact);
         return new ResponseEntity<>(contact, HttpStatus.OK);
     }
@@ -60,7 +72,12 @@ public class ContactController {
     @DeleteMapping("/contact/{id}")
     public ResponseEntity<HttpStatus> deleteContact(@PathVariable String id) {
         LOGGER.info("[IN]ContactController - deleteContact - id: {}", id);
-        contactService.deleteContact(id);
+        try {
+            contactService.deleteContact(id);
+        } catch (NoContactException e) {
+            LOGGER.error("[OUTContactController - deleteContact - NoContactException");
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND); 
+        }
         LOGGER.info("[OUT]ContactController - deleteContact");
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);    
     }
