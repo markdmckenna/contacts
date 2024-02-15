@@ -7,7 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import com.ltp.contacts.exception.NoContactException;
+import com.ltp.contacts.exception.ContactNotFoundException;
 import com.ltp.contacts.pojo.Contact;
 import com.ltp.contacts.repository.ContactRepository;
 
@@ -24,7 +24,7 @@ public class ContactServiceImpl implements ContactService {
     }
 
     @Override
-    public Contact getContactById(String id) throws NoContactException {
+    public Contact getContactById(String id) {
         LOGGER.info("[IN]ContactServiceImpl - getContactById - id: {}", id);
         Contact contact = contactRepository.getContact(this.findIndexById(id));
         LOGGER.info("[OUT]ContactServiceImpl - getContactById - contact: {}", contact);
@@ -37,12 +37,12 @@ public class ContactServiceImpl implements ContactService {
     }
 
     @Override
-    public void updateContact(String id, Contact contact) throws NoContactException {
+    public void updateContact(String id, Contact contact) {
         contactRepository.updateContact(findIndexById(id), contact);
     }
 
     @Override
-    public void deleteContact(String id) throws NoContactException {
+    public void deleteContact(String id) {
         contactRepository.deleteContact(findIndexById(id));
     }
 
@@ -51,11 +51,11 @@ public class ContactServiceImpl implements ContactService {
         return contactRepository.getContacts();
     }
 
-    private int findIndexById(String id) throws NoContactException {
+    private int findIndexById(String id) throws ContactNotFoundException {
         return IntStream.range(0, contactRepository.getContacts().size())
             .filter(index -> contactRepository.getContacts().get(index).getId().equals(id))
             .findFirst()
-            .orElseThrow(() -> new NoContactException());
+            .orElseThrow(() -> new ContactNotFoundException(id));
     }
 
 
