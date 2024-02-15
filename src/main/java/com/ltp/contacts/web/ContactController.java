@@ -2,6 +2,8 @@ package com.ltp.contacts.web;
 
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.apache.commons.collections4.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,7 +44,7 @@ public class ContactController {
     }
 
     @PostMapping("/contacts")
-    public ResponseEntity<HttpStatus> createContact(@RequestBody Contact contact) {
+    public ResponseEntity<HttpStatus> createContact(@Valid @RequestBody Contact contact) {
         LOGGER.info("[IN]ContactController - creatContact - contact: {}", contact);
         contactService.saveContact(contact);
         LOGGER.info("[OUT]ContactController - creatContact");
@@ -50,7 +52,7 @@ public class ContactController {
     }
 
     @PutMapping("/contact/{id}")
-    public ResponseEntity<Contact> updateContact(@PathVariable String id, @RequestBody Contact contact) {
+    public ResponseEntity<Contact> updateContact(@PathVariable String id, @Valid @RequestBody Contact contact) {
         LOGGER.info("[IN]ContactController - updateContact - id: {} - contact: {}", id, contact);
         contactService.updateContact(id, contact);          
         LOGGER.info("[OUT]ContactController - updateContact - contact: {}", contact);
