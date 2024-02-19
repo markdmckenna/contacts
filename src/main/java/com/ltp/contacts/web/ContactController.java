@@ -43,7 +43,7 @@ public class ContactController {
         return new ResponseEntity<>(contact, HttpStatus.OK);
     }
 
-    @PostMapping("/contacts")
+    @PostMapping("/contact")
     public ResponseEntity<HttpStatus> createContact(@Valid @RequestBody Contact contact) {
         LOGGER.info("[IN]ContactController - creatContact - contact: {}", contact);
         contactService.saveContact(contact);
